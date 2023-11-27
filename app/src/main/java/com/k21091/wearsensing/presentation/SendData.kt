@@ -5,7 +5,7 @@ import com.google.android.gms.wearable.*
 import android.util.Log
 import com.google.android.gms.tasks.Task
 
-class SendData (context: Context,nodeSet:MutableSet<Node>){
+class SendData(context: Context, nodeSet:MutableSet<Node>){
     val context:Context = context
     var nodeSet:MutableSet<Node> = nodeSet
     fun setupSendMessage() {
@@ -46,6 +46,7 @@ class SendData (context: Context,nodeSet:MutableSet<Node>){
             }
         }
     }
+
 
     // 送信先として最適なノードを選択
     private fun pickBestNodeId(nodes: Set<Node>): String? {

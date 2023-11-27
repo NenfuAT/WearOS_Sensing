@@ -20,7 +20,10 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat.startActivity
 import androidx.wear.compose.material.MaterialTheme
 import androidx.wear.compose.material.Text
+import com.google.android.gms.wearable.Node
+
 class ReusableComponents {
+
     @Composable
     fun SensingView(sensor:String,modifier: Modifier = Modifier, sensorDataArray:Array<MutableState<String>>) {
         var chipText: MutableState<String> = remember { mutableStateOf("記録開始") }
@@ -49,7 +52,6 @@ class ReusableComponents {
             color = MaterialTheme.colors.primary,
             text = sensorDataArray[2].value
         )
-        val context = LocalContext.current
         val chipSizeModifier = Modifier
             .padding(10.dp)
             .fillMaxWidth()  // 幅を親に合わせる
@@ -57,13 +59,12 @@ class ReusableComponents {
         Chip(
             modifier = chipSizeModifier,
             onClick = {
-                val intent = Intent(context, AccelerationSensor::class.java)
                 if (chipText.value=="記録開始"){
                     globalvariable.mode="true"
                     chipText.value="記録終了"
                 }
                 else if (chipText.value=="記録終了"){
-                    globalvariable.mode="false"
+                    globalvariable.mode="finish"
                     chipText.value="記録開始"
                 }
             },

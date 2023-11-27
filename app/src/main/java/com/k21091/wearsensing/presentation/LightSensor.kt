@@ -70,8 +70,13 @@ class LightSensor : ComponentActivity(), SensorEventListener {
                 sensorDataArray[2].value= " "
             }
             if(globalvariable.mode=="true"){
-                val log:String = sensor.toString()
+                val log:String = System.currentTimeMillis().toString().plus(",").plus(sensor)
                 senddata.sendSensorData(log,tag)
+            }
+            else if(globalvariable.mode=="finish"){
+
+                senddata.sendSensorData(tag,"finish")
+                globalvariable.mode="false"
             }
         }
     }

@@ -72,9 +72,15 @@ class AccelerationSensor : ComponentActivity(), SensorEventListener {
             sensorDataArray[1].value = "Y:$sensorY"
             sensorDataArray[2].value = "Z:$sensorZ"
             if(globalvariable.mode=="true"){
-                val log:String = sensorX.toString().plus(",").plus(sensorY).plus(",").plus(sensorZ)
+                val log:String = System.currentTimeMillis().toString().plus(",").plus(sensorX).plus(",").plus(sensorY).plus(",").plus(sensorZ)
                 senddata.sendSensorData(log,tag)
             }
+            else if(globalvariable.mode=="finish"){
+
+                senddata.sendSensorData(tag,"finish")
+                globalvariable.mode="false"
+            }
+
         }
     }
     //センサの精度が変更されたときに呼ばれる
