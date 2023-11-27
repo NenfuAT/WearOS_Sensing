@@ -29,12 +29,6 @@ class ReusableComponents {
             modifier = modifier,
             textAlign = TextAlign.Center,
             color = MaterialTheme.colors.primary,
-            text = globalvariable.mode!!
-        )
-        Text(
-            modifier = modifier,
-            textAlign = TextAlign.Center,
-            color = MaterialTheme.colors.primary,
             text = sensor
         )
         Text(
