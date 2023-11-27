@@ -33,6 +33,21 @@ class MainActivity : AppCompatActivity(), MessageClient.OnMessageReceivedListene
                 val sensorText: TextView = findViewById(R.id.textView)
                 sensorText.text = strTmp
             }
+            "gyro" -> {
+                // 加速度センサ
+                val data = messageEvent.data.toString(Charsets.UTF_8) //文字列に変換
+                //受け取ったデータmsgはコンマ区切りのcsv形式なので、value[]にそれぞれ格納します。
+                val value = data.split(",").dropLastWhile { it.isEmpty() }.toTypedArray()
+                val x = value[0].toFloat()
+                val y = value[1].toFloat()
+                val z = value[2].toFloat()
+                val strTmp = """ジャイロセンサー
+                         X: $x
+                         Y: $y
+                         Z: $z"""
+                val sensorText: TextView = findViewById(R.id.textView)
+                sensorText.text = strTmp
+            }
             "heart_rate" ->{
                 // 心拍センサ
                 val data = messageEvent.data.toString(Charsets.UTF_8) //文字列に変換

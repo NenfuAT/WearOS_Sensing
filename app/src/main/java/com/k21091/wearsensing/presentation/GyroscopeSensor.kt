@@ -41,7 +41,7 @@ class GyroscopeSensor : ComponentActivity(), SensorEventListener {
     var nodeSet: MutableSet<Node> = mutableSetOf()
     var senddata=SendData(this,nodeSet)
     var tag="gyro"
-    var mode=false
+    val globalvariable = GlobalVariable.getInstance()
     private lateinit var sensorDataArray: Array<MutableState<String>>
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,6 +53,8 @@ class GyroscopeSensor : ComponentActivity(), SensorEventListener {
 
         sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
         GyroSensor = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE)
+        globalvariable.mode="false"
+        senddata.setupSendMessage()
     }
 
     //センサーに何かしらのイベントが発生したときに呼ばれる
@@ -65,17 +67,14 @@ class GyroscopeSensor : ComponentActivity(), SensorEventListener {
             sensorX = event.values[0]
             sensorY = event.values[1]
             sensorZ = event.values[2]
-            val strTmp = """ジャイロセンサー
-                         X: $sensorX
-                         Y: $sensorY
-                         Z: $sensorZ"""
-            //val sensorText: TextView = findViewById(R.id.textView)
             val log:String = sensorX.toString().plus(",").plus(sensorY).plus(",").plus(sensorZ)
-            //sensorText.setText(strTmp)
             sensorDataArray[0].value = "X:$sensorX"
             sensorDataArray[1].value = "Y:$sensorY"
             sensorDataArray[2].value = "Z:$sensorZ"
-            //senddata.sendSensorData(log,tag)
+            if(globalvariable.mode=="true"){
+                val log:String = sensorX.toString().plus(",").plus(sensorY).plus(",").plus(sensorZ)
+                senddata.sendSensorData(log,tag)
+            }
         }
     }
     //センサの精度が変更されたときに呼ばれる
