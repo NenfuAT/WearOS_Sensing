@@ -12,6 +12,7 @@ import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.os.Bundle
+import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Column
@@ -40,8 +41,8 @@ class LightSensor : ComponentActivity(), SensorEventListener {
     private var LightSensor: Sensor? = null
     var nodeSet: MutableSet<Node> = mutableSetOf()
     var senddata=SendData(this,nodeSet)
-    var tag="hrt"
-    var mode=false
+    var tag="light"
+    val globalvariable = GlobalVariable.getInstance()
     private lateinit var sensorDataArray: Array<MutableState<String>>
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,9 +51,11 @@ class LightSensor : ComponentActivity(), SensorEventListener {
             sensorDataArray = Array(3) { remember { mutableStateOf("データが取れませんでした") } }
             WearApp()
         }
-
+        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
         LightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT)
+        globalvariable.mode="false"
+        senddata.setupSendMessage()
     }
 
     //センサーに何かしらのイベントが発生したときに呼ばれる
@@ -61,19 +64,15 @@ class LightSensor : ComponentActivity(), SensorEventListener {
         // Remove the gravity contribution with the high-pass filter.
         if (event.sensor.type === Sensor.TYPE_LIGHT) {
             sensor = event.values[0]
-            val strTmp = """照度センサー
-                         X: $sensor
-                        """
-            //val sensorText: TextView = findViewById(R.id.textView)
-            val log:String = sensor.toString()
-            //sensorText.setText(strTmp)
             if (::sensorDataArray.isInitialized) {
                 sensorDataArray[0].value =" "
                 sensorDataArray[1].value= "$sensor"
                 sensorDataArray[2].value= " "
             }
-
-            //senddata.sendSensorData(log,tag)
+            if(globalvariable.mode=="true"){
+                val log:String = sensor.toString()
+                senddata.sendSensorData(log,tag)
+            }
         }
     }
     //センサの精度が変更されたときに呼ばれる

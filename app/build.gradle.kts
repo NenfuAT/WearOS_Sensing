@@ -70,7 +70,6 @@ dependencies {
     implementation ("com.google.android.gms:play-services-wearable:17.1.0")
     implementation("androidx.compose.ui:ui-text-android:1.5.4")
 
-
     androidTestImplementation(platform("androidx.compose:compose-bom:2023.03.00"))
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")

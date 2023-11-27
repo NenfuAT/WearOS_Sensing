@@ -12,6 +12,7 @@ import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.os.Bundle
+import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Column
@@ -50,7 +51,7 @@ class GyroscopeSensor : ComponentActivity(), SensorEventListener {
             sensorDataArray = Array(3) { remember { mutableStateOf("データが取れませんでした") } }
             WearApp()
         }
-
+        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
         GyroSensor = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE)
         globalvariable.mode="false"
@@ -67,7 +68,6 @@ class GyroscopeSensor : ComponentActivity(), SensorEventListener {
             sensorX = event.values[0]
             sensorY = event.values[1]
             sensorZ = event.values[2]
-            val log:String = sensorX.toString().plus(",").plus(sensorY).plus(",").plus(sensorZ)
             sensorDataArray[0].value = "X:$sensorX"
             sensorDataArray[1].value = "Y:$sensorY"
             sensorDataArray[2].value = "Z:$sensorZ"

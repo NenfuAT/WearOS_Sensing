@@ -51,9 +51,30 @@ class MainActivity : AppCompatActivity(), MessageClient.OnMessageReceivedListene
             "heart_rate" ->{
                 // 心拍センサ
                 val data = messageEvent.data.toString(Charsets.UTF_8) //文字列に変換
-                val heartRateData = data.toFloat()
 
-                // 何かしらの処理
+                val x = ""
+                val heartRateData = data.toFloat()
+                val z = ""
+                val strTmp = """心拍センサー
+                         $x
+                         $heartRateData
+                         $z"""
+                val sensorText: TextView = findViewById(R.id.textView)
+                sensorText.text = strTmp
+            }
+            "light" ->{
+                // 心拍センサ
+                val data = messageEvent.data.toString(Charsets.UTF_8) //文字列に変換
+
+                val x = ""
+                val heartRateData = data.toFloat()
+                val z = ""
+                val strTmp = """照度センサー
+                         $x
+                         $heartRateData
+                         $z"""
+                val sensorText: TextView = findViewById(R.id.textView)
+                sensorText.text = strTmp
             }
         }
     }
