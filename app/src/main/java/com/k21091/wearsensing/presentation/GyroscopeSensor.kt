@@ -71,13 +71,19 @@ class GyroscopeSensor : ComponentActivity(), SensorEventListener {
             sensorDataArray[0].value = "X:$sensorX"
             sensorDataArray[1].value = "Y:$sensorY"
             sensorDataArray[2].value = "Z:$sensorZ"
-            if(globalvariable.mode=="true"){
-                val log:String = System.currentTimeMillis().toString().plus(",").plus(sensorX).plus(",").plus(sensorY).plus(",").plus(sensorZ)
-                senddata.sendSensorData(log,tag)
-            }
-            else if(globalvariable.mode=="finish"){
-                senddata.sendSensorData(tag,"finish")
-                globalvariable.mode="false"
+            val log:String = System.currentTimeMillis().toString().plus(",").plus(sensorX).plus(",").plus(sensorY).plus(",").plus(sensorZ)
+            senddata.sendSensorData(log,tag)
+            when (globalvariable.mode) {
+                "start" -> {
+
+                    senddata.sendSensorData(tag,"start")
+                    globalvariable.mode="else"
+                }
+                "finish" -> {
+
+                    senddata.sendSensorData(tag,"finish")
+                    globalvariable.mode="else"
+                }
             }
         }
     }

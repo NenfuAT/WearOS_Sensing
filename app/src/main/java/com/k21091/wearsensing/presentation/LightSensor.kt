@@ -49,6 +49,8 @@ class LightSensor : ComponentActivity(), SensorEventListener {
         super.onCreate(savedInstanceState)
         setContent {
             sensorDataArray = Array(3) { remember { mutableStateOf("データが取れませんでした") } }
+            sensorDataArray[0].value =""
+            sensorDataArray[2].value =""
             WearApp()
         }
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
@@ -69,14 +71,19 @@ class LightSensor : ComponentActivity(), SensorEventListener {
                 sensorDataArray[1].value= "$sensor"
                 sensorDataArray[2].value= " "
             }
-            if(globalvariable.mode=="true"){
-                val log:String = System.currentTimeMillis().toString().plus(",").plus(sensor)
-                senddata.sendSensorData(log,tag)
-            }
-            else if(globalvariable.mode=="finish"){
+            val log:String = System.currentTimeMillis().toString().plus(",").plus(sensor)
+            senddata.sendSensorData(log,tag)
+            when (globalvariable.mode) {
+                "start" -> {
 
-                senddata.sendSensorData(tag,"finish")
-                globalvariable.mode="false"
+                    senddata.sendSensorData(tag,"start")
+                    globalvariable.mode="else"
+                }
+                "finish" -> {
+
+                    senddata.sendSensorData(tag,"finish")
+                    globalvariable.mode="else"
+                }
             }
         }
     }

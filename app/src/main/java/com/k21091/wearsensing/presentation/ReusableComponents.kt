@@ -60,7 +60,7 @@ class ReusableComponents {
             modifier = chipSizeModifier,
             onClick = {
                 if (chipText.value=="記録開始"){
-                    globalvariable.mode="true"
+                    globalvariable.mode="start"
                     chipText.value="記録終了"
                 }
                 else if (chipText.value=="記録終了"){
