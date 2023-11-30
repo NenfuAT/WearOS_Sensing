@@ -20,10 +20,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.wear.compose.material.AutoCenteringParams
 import androidx.wear.compose.material.PositionIndicator
 import androidx.wear.compose.material.Scaffold
 import androidx.wear.compose.material.ScalingLazyColumn
+import androidx.wear.compose.material.Text
 import androidx.wear.compose.material.TimeText
 import androidx.wear.compose.material.Vignette
 import androidx.wear.compose.material.VignettePosition
@@ -88,7 +90,12 @@ fun WearApp() {
             ) {
 
                 val reusableComponents = ReusableComponents()
-
+                item {
+                    Text("センサデータ",fontSize = 20.sp)
+                }
+                item {
+                    Text("とる蔵",fontSize = 20.sp)
+                }
                 item { reusableComponents.AccelerometerChip(contentModifier, iconModifier) }
                 item { reusableComponents.GyroscopeChip(contentModifier, iconModifier) }
                 item { reusableComponents.HeartrateChip(contentModifier, iconModifier) }
