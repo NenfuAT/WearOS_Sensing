@@ -2,6 +2,8 @@ package com.k21091.wearsensing.presentation
 
 import android.content.Intent
 import android.content.res.Configuration
+import android.util.Log
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -11,81 +13,141 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.platform.LocalContext
 import androidx.wear.compose.material.Chip
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat.startActivity
 import androidx.wear.compose.material.MaterialTheme
+import androidx.wear.compose.material.Switch
 import androidx.wear.compose.material.Text
-import com.google.android.gms.wearable.Node
+import androidx.wear.compose.material.ToggleChip
 
 class ReusableComponents {
 
+
     @Composable
-    fun SensingView(sensor:String,modifier: Modifier = Modifier, sensorDataArray:Array<MutableState<String>>) {
-        var chipText: MutableState<String> = remember { mutableStateOf("記録開始") }
+    fun AccToggle(modifier: Modifier = Modifier) {
         val globalvariable = GlobalVariable.getInstance()
-        Text(
+        var checked by remember { mutableStateOf(globalvariable.isAccSensorEnabled) }
+
+        ToggleChip(
             modifier = modifier,
-            textAlign = TextAlign.Center,
-            color = MaterialTheme.colors.primary,
-            text = sensor
-        )
-        Text(
-            modifier = modifier,
-            textAlign = TextAlign.Left,
-            color = MaterialTheme.colors.primary,
-            text = sensorDataArray[0].value
-        )
-        Text(
-            modifier = modifier,
-            textAlign = TextAlign.Left,
-            color = MaterialTheme.colors.primary,
-            text = sensorDataArray[1].value
-        )
-        Text(
-            modifier = modifier,
-            textAlign = TextAlign.Left,
-            color = MaterialTheme.colors.primary,
-            text = sensorDataArray[2].value
-        )
-        val chipSizeModifier = Modifier
-            .padding(10.dp)
-            .fillMaxWidth()  // 幅を親に合わせる
-            .aspectRatio(3f)
-        Chip(
-            modifier = chipSizeModifier,
-            onClick = {
-                if (chipText.value=="記録開始"){
-                    globalvariable.mode="start"
-                    chipText.value="記録終了"
-                }
-                else if (chipText.value=="記録終了"){
-                    globalvariable.mode="finish"
-                    chipText.value="記録開始"
-                }
+            checked = checked,
+            toggleControl = {
+                Switch(
+                    checked = checked,
+                    modifier = Modifier.semantics {
+                        this.contentDescription = if (checked) "On" else "Off"
+                    }
+                )
+            },
+            onCheckedChange = {
+                checked = it
+                globalvariable.isAccSensorEnabled = checked
             },
             label = {
                 Text(
-                    text = chipText.value,
+                    text = "加速度",
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
-            },
+            }
         )
     }
-
-    @Preview(
-        apiLevel = 30,
-        uiMode = Configuration.UI_MODE_TYPE_WATCH,
-        device = Devices.WEAR_OS_SMALL_ROUND
-    )
-
     @Composable
-    fun AccelerometerChip(
+    fun GyroToggle(modifier: Modifier = Modifier) {
+        val globalvariable = GlobalVariable.getInstance()
+        var checked by remember { mutableStateOf(globalvariable.isGyroSensorEnabled) }
+        ToggleChip(
+            modifier = modifier,
+            checked = checked,
+            toggleControl = {
+                Switch(
+                    checked = checked,
+                    modifier = Modifier.semantics {
+                        this.contentDescription = if (checked) "On" else "Off"
+                    }
+                )
+            },
+            onCheckedChange = {
+                checked = it
+                globalvariable.isGyroSensorEnabled = checked
+            },
+            label = {
+                Text(
+                    text = "ジャイロ",
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
+        )
+    }
+    @Composable
+    fun HeartRateToggle(modifier: Modifier = Modifier) {
+        val globalvariable = GlobalVariable.getInstance()
+        var checked by remember { mutableStateOf(globalvariable.isHeartRateSensorEnabled) }
+        ToggleChip(
+            modifier = modifier,
+            checked = checked,
+            toggleControl = {
+                Switch(
+                    checked = checked,
+                    modifier = Modifier.semantics {
+                        this.contentDescription = if (checked) "On" else "Off"
+                    }
+                )
+            },
+            onCheckedChange = {
+                checked = it
+                globalvariable.isHeartRateSensorEnabled = checked
+            },
+            label = {
+                Text(
+                    text = "心拍",
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
+        )
+    }
+    @Composable
+    fun LightToggle(modifier: Modifier = Modifier) {
+        val globalvariable = GlobalVariable.getInstance()
+        var checked by remember { mutableStateOf(globalvariable.isLightSensorEnabled) }
+        ToggleChip(
+            modifier = modifier,
+            checked = checked,
+            toggleControl = {
+                Switch(
+                    checked = checked,
+                    modifier = Modifier.semantics {
+                        this.contentDescription = if (checked) "On" else "Off"
+                    }
+                )
+            },
+            onCheckedChange = {
+                checked = it
+                globalvariable.isLightSensorEnabled = checked
+            },
+            label = {
+                Text(
+                    text = "照度",
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
+        )
+    }
+    @Composable
+    fun SetMultiChip(
         modifier: Modifier = Modifier,
         iconModifier: Modifier = Modifier
     ) {
@@ -93,12 +155,12 @@ class ReusableComponents {
         Chip(
             modifier = modifier,
             onClick = {
-                val intent = Intent(context, AccelerationSensor::class.java)
+                val intent = Intent(context, MultiSensor::class.java)
                 startActivity(context, intent, null)
             },
             label = {
                 Text(
-                    text = "加速度センサ",
+                    text = "使用センサ確定",
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
@@ -107,68 +169,35 @@ class ReusableComponents {
     }
 
     @Composable
-    fun GyroscopeChip(
-        modifier: Modifier = Modifier,
-        iconModifier: Modifier = Modifier
-    ) {
-        val context = LocalContext.current
-        Chip(
-            modifier = modifier,
-            onClick = {
-                val intent = Intent(context, GyroscopeSensor::class.java)
-                startActivity(context, intent, null)
-            },
-            label = {
-                Text(
-                    text = "ジャイロセンサ",
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
-            },
-        )
+    fun MultiView(sensor: String, modifier: Modifier = Modifier, sensorDataArray: Array<MutableState<String>>) {
+        Column(
+            modifier = modifier
+        ) {
+            Text(
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colors.primary,
+                text = sensor,
+                modifier = Modifier.padding(bottom = 4.dp)
+            )
+            Text(
+                textAlign = TextAlign.Left,
+                color = MaterialTheme.colors.primary,
+                text = sensorDataArray[0].value,
+                modifier = Modifier.padding(bottom = 4.dp)
+            )
+            Text(
+                textAlign = TextAlign.Left,
+                color = MaterialTheme.colors.primary,
+                text = sensorDataArray[1].value,
+                modifier = Modifier.padding(bottom = 4.dp)
+            )
+            Text(
+                textAlign = TextAlign.Left,
+                color = MaterialTheme.colors.primary,
+                text = sensorDataArray[2].value,
+            )
+        }
     }
 
-    @Composable
-    fun HeartrateChip(
-        modifier: Modifier = Modifier,
-        iconModifier: Modifier = Modifier
-    ) {
-        val context = LocalContext.current
-        Chip(
-            modifier = modifier,
-            onClick = {
-                val intent = Intent(context, HeartrateSensor::class.java)
-                startActivity(context, intent, null)
-            },
-            label = {
-                Text(
-                    text = "心拍センサ",
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
-            },
-        )
-    }
 
-    @Composable
-    fun LightChip(
-        modifier: Modifier = Modifier,
-        iconModifier: Modifier = Modifier
-    ) {
-        val context = LocalContext.current
-        Chip(
-            modifier = modifier,
-            onClick = {
-                val intent = Intent(context, LightSensor::class.java)
-                startActivity(context, intent, null)
-            },
-            label = {
-                Text(
-                    text = "照度センサ",
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
-            },
-        )
-    }
 }
