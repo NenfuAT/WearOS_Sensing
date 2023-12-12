@@ -1,6 +1,7 @@
 package com.k21091.wearsensing
 
 
+import android.annotation.SuppressLint
 import com.google.android.gms.wearable.*
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -12,8 +13,16 @@ import com.google.android.gms.wearable.MessageClient
 
 class MainActivity : AppCompatActivity(), MessageClient.OnMessageReceivedListener {
     val dataList: MutableList<String> = mutableListOf()
+    val accdataList: MutableList<String> = mutableListOf()
+    val gyrodataList: MutableList<String> = mutableListOf()
+    val heartratedataList: MutableList<String> = mutableListOf()
+    val lightdataList: MutableList<String> = mutableListOf()
     lateinit var createCSV: CreateCSV
     var send = false
+    var accstr = ""
+    var gyrostr = ""
+    var heartratestr=""
+    var lightstr=""
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -28,94 +37,47 @@ class MainActivity : AppCompatActivity(), MessageClient.OnMessageReceivedListene
     }
 
     // 受信したメッセージからデータを整理し処理
+
+    @SuppressLint("SetTextI18n")
     override fun onMessageReceived(messageEvent: MessageEvent) {
+        val sensorText: TextView = findViewById(R.id.textView)
+        val strtmp="""
+            $accstr
+            $gyrostr
+            $heartratestr
+            $lightstr
+        """
+        sensorText.text = strtmp
         when(messageEvent.path) {
+
             // tag別に処理を変える
             "acc" -> {
-                // 加速度センサ
-                val data = messageEvent.data.toString(Charsets.UTF_8) //文字列に変換
-                if (send){
-                    if (dataList.isEmpty()) {
-                        // リストが空の場合の処理
-                        dataList.add("time,x,y,z")
-                    }
-                    dataList.add(data)
+                if (accdataList.isEmpty()) {
+                    // リストが空の場合の処理
+                    accdataList.add("time,x,y,z")
                 }
-                //受け取ったデータmsgはコンマ区切りのcsv形式なので、value[]にそれぞれ格納します。
-                val value = data.split(",").dropLastWhile { it.isEmpty() }.toTypedArray()
-                val x = value[1].toFloat()
-                val y = value[2].toFloat()
-                val z = value[3].toFloat()
-                val strTmp = """加速度センサー
-                         X: $x
-                         Y: $y
-                         Z: $z"""
-                val sensorText: TextView = findViewById(R.id.textView)
-                sensorText.text = strTmp
+                accstr=getThreeData("加速度センサ",messageEvent,accdataList)
             }
             "gyro" -> {
-                // ジャイロセンサ
-                val data = messageEvent.data.toString(Charsets.UTF_8) //文字列に変換
-                if (send){
-                    if (dataList.isEmpty()) {
-                        // リストが空の場合の処理
-                        dataList.add("time,x,y,z")
-                    }
-                    dataList.add(data)
+                if (gyrodataList.isEmpty()) {
+                    // リストが空の場合の処理
+                    gyrodataList.add("time,x,y,z")
                 }
-                //受け取ったデータmsgはコンマ区切りのcsv形式なので、value[]にそれぞれ格納します。
-                val value = data.split(",").dropLastWhile { it.isEmpty() }.toTypedArray()
-                val x = value[1].toFloat()
-                val y = value[2].toFloat()
-                val z = value[3].toFloat()
-                val strTmp = """ジャイロセンサ
-                         X: $x
-                         Y: $y
-                         Z: $z"""
-                val sensorText: TextView = findViewById(R.id.textView)
-                sensorText.text = strTmp
+                gyrostr=getThreeData("ジャイロセンサ",messageEvent,gyrodataList)
             }
             "heart_rate" ->{
-                // 心拍センサ
-                val data = messageEvent.data.toString(Charsets.UTF_8) //文字列に変換
-                if(send) {
-                    if (dataList.isEmpty()) {
-                        // リストが空の場合の処理
-                        dataList.add("time,heartRate")
-                    }
-                    dataList.add(data)
+                if (heartratedataList.isEmpty()) {
+                    // リストが空の場合の処理
+                    heartratedataList.add("time,heart_rate")
                 }
-                val value = data.split(",").dropLastWhile { it.isEmpty() }.toTypedArray()
-                val x = ""
-                val heartRateData = value[1].toFloat()
-                val z = ""
-                val strTmp = """心拍センサ
-                         $x
-                         $heartRateData
-                         $z"""
-                val sensorText: TextView = findViewById(R.id.textView)
-                sensorText.text = strTmp
+                heartratestr=getOneData("心拍センサ",messageEvent,heartratedataList)
             }
             "light" ->{
-                // 照度センサ
-                val data = messageEvent.data.toString(Charsets.UTF_8) //文字列に変換
-                if (send) {
-                    if (dataList.isEmpty()) {
-                        // リストが空の場合の処理
-                        dataList.add("time,Light")
-                    }
-                    dataList.add(data)
+                if (lightdataList.isEmpty()) {
+                    // リストが空の場合の処理
+                    lightdataList.add("time,light")
                 }
-                val value = data.split(",").dropLastWhile { it.isEmpty() }.toTypedArray()
-                val x = ""
-                val heartRateData = value[1].toFloat()
-                val z = ""
-                val strTmp = """照度センサ
-                         $x
-                         $heartRateData
-                         $z"""
-                val sensorText: TextView = findViewById(R.id.textView)
-                sensorText.text = strTmp
+                lightstr=getOneData("照度センサ",messageEvent,lightdataList)
             }
             "start" -> {
                 send=true
@@ -133,8 +95,22 @@ class MainActivity : AppCompatActivity(), MessageClient.OnMessageReceivedListene
                 No_Button.visibility = View.VISIBLE
                 save_Text.visibility = View.VISIBLE
                 Yes_Button.setOnClickListener {
-                    createCSV.writeText(data,dataList)
-                    dataList.clear()
+                    if(!accdataList.isEmpty()){
+                        createCSV.writeText("acc",accdataList)
+                        accdataList.clear()
+                    }
+                    if(!gyrodataList.isEmpty()){
+                        createCSV.writeText("gyro",gyrodataList)
+                        gyrodataList.clear()
+                    }
+                    if(!heartratedataList.isEmpty()){
+                        createCSV.writeText("heartrate",heartratedataList)
+                        heartratedataList.clear()
+                    }
+                    if(!lightdataList.isEmpty()){
+                        createCSV.writeText("light",lightdataList)
+                        lightdataList.clear()
+                    }
                     Yes_Button.visibility = View.GONE
                     No_Button.visibility = View.GONE
                     save_Text.visibility = View.GONE
@@ -150,4 +126,45 @@ class MainActivity : AppCompatActivity(), MessageClient.OnMessageReceivedListene
             }
         }
     }
+
+    fun getOneData(
+        sensorname: String,
+        messageEvent: MessageEvent,
+        dataList: MutableList<String>
+    ): String {
+        // 心拍センサ
+        val data = messageEvent.data.toString(Charsets.UTF_8) //文字列に変換
+        if(send) {
+            dataList.add(data)
+        }
+        val value = data.split(",").dropLastWhile { it.isEmpty() }.toTypedArray()
+        val x = ""
+        val Data = value[1].toFloat()
+        val z = ""
+        return """$sensorname
+                         $x
+                         $Data
+                         $z"""
+    }
+    fun getThreeData(
+        sensorname: String,
+        messageEvent: MessageEvent,
+        dataList: MutableList<String>
+    ): String {
+        // 加速度センサ
+        val data = messageEvent.data.toString(Charsets.UTF_8) //文字列に変換
+        if (send) {
+            dataList.add(data)
+        }
+        //受け取ったデータmsgはコンマ区切りのcsv形式なので、value[]にそれぞれ格納します。
+        val value = data.split(",").dropLastWhile { it.isEmpty() }.toTypedArray()
+        val x = value[1].toFloat()
+        val y = value[2].toFloat()
+        val z = value[3].toFloat()
+        return """$sensorname
+                         X: $x
+                         Y: $y
+                         Z: $z"""
+    }
+
 }
