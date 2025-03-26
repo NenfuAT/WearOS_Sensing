@@ -6,6 +6,7 @@ class GlobalVariable :Application(){
     var isGyroSensorEnabled: Boolean = false
     var isHeartRateSensorEnabled: Boolean = false
     var isLightSensorEnabled: Boolean = false
+
     companion object {
         private var instance : GlobalVariable? = null
         fun  getInstance(): GlobalVariable {
@@ -14,4 +15,5 @@ class GlobalVariable :Application(){
             return instance!!
         }
     }
+
 }
