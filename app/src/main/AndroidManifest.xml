@@ -38,26 +38,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".presentation.AccelerationSensor"
-            android:label="Acceleration Sensor Activity">
-        </activity>
-        <activity
-            android:name=".presentation.GyroscopeSensor"
-            android:label="Gyroscope Sensor Activity">
-        </activity>
-        <activity
-            android:name=".presentation.HeartrateSensor"
-            android:label="Heartrate Sensor Activity">
-        </activity>
-        <activity
-            android:name=".presentation.LightSensor"
-            android:label="Light Sensor Activity">
-        </activity>
-        <activity
-            android:name=".presentation.SetMultiSensor"
-            android:label="Set Multi Sensor Activity">
-        </activity>
-        <activity
             android:name=".presentation.MultiSensor"
             android:label="Multi Sensor Activity">
         </activity>

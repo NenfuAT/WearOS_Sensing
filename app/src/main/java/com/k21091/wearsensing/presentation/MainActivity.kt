@@ -91,10 +91,10 @@ class MainActivity : ComponentActivity(){
 
                     val reusableComponents = ReusableComponents()
                     item {
-                        Text("使うセンサーを",fontSize = 20.sp)
+                        Text("センサデータ",fontSize = 20.sp)
                     }
                     item {
-                        Text("選んでネ",fontSize = 20.sp)
+                        Text("取る蔵",fontSize = 20.sp)
                     }
                     item { reusableComponents.AccToggle(contentModifier) }
                     item { reusableComponents.GyroToggle(contentModifier) }

@@ -199,5 +199,9 @@ class ReusableComponents {
         }
     }
 
+    @Composable
+    fun SendMenu(sensorDataArray: Array<MutableState<String>>){
+
+    }
 
 }
